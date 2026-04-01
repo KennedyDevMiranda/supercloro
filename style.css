@@ -12,9 +12,10 @@ body { font-family: Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-
 .config-box button:active { background: #4f46e5; }
 .conexao-ok { color: #22c55e; font-size: 12px; margin-top: 4px; display: none; }
 .conexao-err { color: #ef4444; font-size: 12px; margin-top: 4px; display: none; }
-.aviso-cert { width: 95%; max-width: 500px; margin: 8px auto; padding: 12px; background: #1e293b; border: 1px solid #f59e0b; border-radius: 8px; text-align: center; display: none; }
-.aviso-cert p { font-size: 13px; color: #f59e0b; margin-bottom: 8px; }
-.aviso-cert a { color: #3b82f6; font-weight: bold; text-decoration: underline; font-size: 14px; }
+.aviso-cert { width: 95%; max-width: 500px; margin: 8px auto; padding: 16px; background: #1e293b; border: 2px solid #f59e0b; border-radius: 8px; text-align: center; display: none; }
+.aviso-cert .passo { font-size: 14px; color: #f59e0b; margin-bottom: 12px; }
+.aviso-cert .passo2 { margin-top: 12px; margin-bottom: 0; color: #22c55e; }
+.aviso-cert .btn-cert { display: block; padding: 14px; background: #f59e0b; color: #0f172a; font-weight: bold; font-size: 14px; text-decoration: none; border-radius: 8px; margin: 8px 0; }
 #reader { position: relative; width: 95%; max-width: 500px; margin: 12px auto; border: 3px solid #22c55e; border-radius: 12px; overflow: hidden; background: #000; }
 #reader video { width: 100%; display: block; }
 .guide-box { position: absolute; left: 5%; right: 5%; top: 35%; bottom: 35%; border: 2px dashed rgba(34,197,94,0.5); border-radius: 8px; pointer-events: none; }

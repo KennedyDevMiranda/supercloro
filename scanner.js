@@ -1,111 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>📷 Scanner PDV</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh;
-         display: flex; flex-direction: column; align-items: center; }
-  .header { background: #1e293b; width: 100%; padding: 16px; text-align: center; }
-  .header h1 { font-size: 20px; color: #22c55e; }
-  .header p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-  #reader { position: relative; width: 95%; max-width: 500px; margin: 12px auto;
-             border: 3px solid #22c55e; border-radius: 12px; overflow: hidden; background: #000; }
-  #reader video { width: 100%; display: block; }
-  .scan-line { position: absolute; left: 5%; width: 90%; height: 2px; background: #22c55e;
-                box-shadow: 0 0 8px #22c55e; opacity: 0.8; animation: scanAnim 2s ease-in-out infinite; pointer-events: none; }
-  @keyframes scanAnim { 0%,100% { top: 30%; } 50% { top: 70%; } }
-  .status { padding: 12px; text-align: center; font-size: 14px; color: #94a3b8; }
-  .status.ok { color: #22c55e; font-weight: bold; }
-  .status.warn { color: #f59e0b; font-weight: bold; }
-  .status.err { color: #ef4444; }
-  .acoes { width: 95%; max-width: 500px; margin: 8px auto; display: flex; gap: 8px; }
-  .btn-foto { flex: 1; padding: 16px; font-size: 16px; font-weight: bold; border: none;
-               border-radius: 8px; background: #3b82f6; color: white; cursor: pointer; text-align: center; }
-  .btn-foto:active { background: #2563eb; }
-  .manual { width: 95%; max-width: 500px; margin: 8px auto; display: flex; gap: 8px; }
-  .manual input { flex: 1; padding: 14px; font-size: 18px; border: 2px solid #334155;
-                   border-radius: 8px; background: #1e293b; color: #f1f5f9; text-align: center; }
-  .manual input:focus { border-color: #22c55e; outline: none; }
-  .manual button { padding: 14px 20px; font-size: 16px; font-weight: bold; border: none;
-                    border-radius: 8px; background: #22c55e; color: #0f172a; cursor: pointer; }
-  .manual button:active { background: #16a34a; }
-  .historico { width: 95%; max-width: 500px; margin: 16px auto; }
-  .historico h3 { font-size: 14px; color: #64748b; margin-bottom: 8px; }
-  .historico ul { list-style: none; max-height: 200px; overflow-y: auto; }
-  .historico li { padding: 8px 12px; background: #1e293b; margin-bottom: 4px; border-radius: 6px;
-                   font-family: monospace; font-size: 14px; display: flex; justify-content: space-between; }
-  .historico li .time { color: #64748b; font-size: 12px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px;
-            background: #22c55e20; color: #22c55e; margin-left: 8px; }
-  #reader__scan_region { background: #000 !important; }
-  #reader__dashboard { display: none !important; }
-  #reader__header_message { display: none !important; }
-  #qr-shaded-region { border-color: #22c55e !important; }
-
-  /* Config do servidor */
-  .config { width: 95%; max-width: 500px; margin: 10px auto; }
-  .config-box { display: flex; gap: 8px; align-items: center; }
-  .config-box input { flex: 1; padding: 10px; font-size: 14px; border: 2px solid #334155;
-                       border-radius: 8px; background: #1e293b; color: #f1f5f9; font-family: monospace; }
-  .config-box input:focus { border-color: #3b82f6; outline: none; }
-  .config-box button { padding: 10px 16px; font-size: 13px; font-weight: bold; border: none;
-                        border-radius: 8px; background: #6366f1; color: white; cursor: pointer; white-space: nowrap; }
-  .config-box button:active { background: #4f46e5; }
-  .config label { font-size: 12px; color: #64748b; margin-bottom: 4px; display: block; }
-  .aviso-cert { width: 95%; max-width: 500px; margin: 8px auto; padding: 12px; background: #1e293b;
-                 border: 1px solid #f59e0b; border-radius: 8px; text-align: center; display: none; }
-  .aviso-cert p { font-size: 13px; color: #f59e0b; margin-bottom: 8px; }
-  .aviso-cert a { color: #3b82f6; font-weight: bold; text-decoration: underline; font-size: 14px; }
-  .conexao-ok { color: #22c55e; font-size: 12px; margin-top: 4px; display: none; }
-  .conexao-err { color: #ef4444; font-size: 12px; margin-top: 4px; display: none; }
-</style>
-</head>
-<body>
-
-<div class="header">
-  <h1>📷 Scanner de Código de Barras</h1>
-  <p>Aponte a câmera ou tire uma foto do código</p>
-</div>
-
-<!-- Configuração do servidor PDV -->
-<div class="config">
-  <label>🖥️ Endereço do servidor PDV:</label>
-  <div class="config-box">
-    <input id="serverInput" type="text" placeholder="Ex: 192.168.1.10:5556" />
-    <button onclick="conectarServidor()">CONECTAR</button>
-  </div>
-  <div id="conexaoOk" class="conexao-ok">✅ Conectado ao PDV</div>
-  <div id="conexaoErr" class="conexao-err">❌ Não conectou — aceite o certificado primeiro</div>
-</div>
-
-<div id="avisoCert" class="aviso-cert">
-  <p>⚠️ Certificado do servidor não aceito.<br>Toque no link abaixo, aceite o certificado, e volte aqui:</p>
-  <a id="linkCert" href="#" target="_blank">Abrir servidor para aceitar certificado →</a>
-</div>
-
-<div id="reader"></div>
-
-<div id="status" class="status">Configure o endereço do servidor acima</div>
-
-<div class="acoes">
-  <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none">
-  <button class="btn-foto" onclick="document.getElementById('fotoInput').click()">📸 TIRAR FOTO DO CÓDIGO</button>
-</div>
-
-<div class="manual">
-  <input id="codigoManual" type="text" inputmode="numeric" placeholder="Ou digite o código" />
-  <button onclick="enviarManual()">ENVIAR</button>
-</div>
-
-<div class="historico">
-  <h3>Últimos escaneados:</h3>
-  <ul id="lista"></ul>
-</div>
-
-<script>
 const statusEl = document.getElementById('status');
 const lista = document.getElementById('lista');
 const inputManual = document.getElementById('codigoManual');
@@ -114,11 +6,17 @@ const conexaoOk = document.getElementById('conexaoOk');
 const conexaoErr = document.getElementById('conexaoErr');
 const avisoCert = document.getElementById('avisoCert');
 const linkCert = document.getElementById('linkCert');
+
 let ultimoCodigo = '';
 let cooldown = false;
-let serverUrl = ''; // Ex: https://192.168.1.10:5556
+let serverUrl = '';
 let servidorConectado = false;
-const FORMATOS = ['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code'];
+
+const FORMATOS = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'qr_code'];
+
+// ══════════════════════════════════════════
+// 🔌 CONEXÃO COM O SERVIDOR PDV
+// ══════════════════════════════════════════
 
 // Lê parâmetro ?pdv=IP:PORTA da URL
 (function lerParametro() {
@@ -145,7 +43,7 @@ async function conectarServidor() {
   }
   serverUrl = base;
 
-  // Testa a conexão fazendo um POST vazio (será rejeitado com ERRO:Código vazio, mas indica que o servidor está acessível)
+  // Testa a conexão com PING
   try {
     const resp = await fetch(serverUrl + '/scan', {
       method: 'POST',
@@ -168,6 +66,10 @@ async function conectarServidor() {
   }
 }
 
+// ══════════════════════════════════════════
+// 📤 ENVIAR CÓDIGO AO SERVIDOR
+// ══════════════════════════════════════════
+
 async function enviarCodigo(codigo) {
   if (!codigo || cooldown) return;
   if (codigo === ultimoCodigo) return;
@@ -179,6 +81,7 @@ async function enviarCodigo(codigo) {
   ultimoCodigo = codigo;
   cooldown = true;
   setTimeout(() => { cooldown = false; ultimoCodigo = ''; }, 2000);
+
   try {
     const resp = await fetch(serverUrl + '/scan', { method: 'POST', body: codigo });
     const texto = await resp.text();
@@ -212,12 +115,22 @@ async function enviarCodigo(codigo) {
 
 function enviarManual() {
   const c = inputManual.value.trim();
-  if (c) { ultimoCodigo = ''; cooldown = false; enviarCodigo(c); inputManual.value = ''; inputManual.focus(); }
+  if (c) {
+    ultimoCodigo = '';
+    cooldown = false;
+    enviarCodigo(c);
+    inputManual.value = '';
+    inputManual.focus();
+  }
 }
 
-inputManual.addEventListener('keydown', function(e) {
+inputManual.addEventListener('keydown', function (e) {
   if (e.key === 'Enter') enviarManual();
 });
+
+// ══════════════════════════════════════════
+// 📋 HISTÓRICO
+// ══════════════════════════════════════════
 
 function adicionarHistorico(codigo) {
   const li = document.createElement('li');
@@ -230,7 +143,8 @@ function adicionarHistorico(codigo) {
 // ══════════════════════════════════════════
 // 📸 ANÁLISE DE FOTO (mais confiável)
 // ══════════════════════════════════════════
-document.getElementById('fotoInput').addEventListener('change', async function(e) {
+
+document.getElementById('fotoInput').addEventListener('change', async function (e) {
   const file = e.target.files[0];
   if (!file) return;
   statusEl.textContent = '🔍 Analisando foto...';
@@ -244,7 +158,8 @@ document.getElementById('fotoInput').addEventListener('change', async function(e
       const det = new BarcodeDetector({ formats: FORMATOS });
       const res = await det.detect(bmp);
       if (res.length > 0) {
-        ultimoCodigo = ''; cooldown = false;
+        ultimoCodigo = '';
+        cooldown = false;
         enviarCodigo(res[0].rawValue);
         e.target.value = '';
         return;
@@ -256,7 +171,8 @@ document.getElementById('fotoInput').addEventListener('change', async function(e
       const tmp = new Html5Qrcode('foto-temp');
       try {
         const r = await tmp.scanFileV2(file, false);
-        ultimoCodigo = ''; cooldown = false;
+        ultimoCodigo = '';
+        cooldown = false;
         enviarCodigo(r.decodedText);
         e.target.value = '';
         tmp.clear();
@@ -276,6 +192,7 @@ document.getElementById('fotoInput').addEventListener('change', async function(e
 // ══════════════════════════════════════════
 // 📷 SCANNER EM TEMPO REAL
 // ══════════════════════════════════════════
+
 function loadScript(url, timeout) {
   return new Promise((resolve) => {
     const s = document.createElement('script');
@@ -321,7 +238,7 @@ async function iniciarBarcodeDetector() {
       try {
         const barcodes = await detector.detect(video);
         if (barcodes.length > 0) enviarCodigo(barcodes[0].rawValue);
-      } catch {}
+      } catch { }
       scanning = false;
     }
     requestAnimationFrame(scanLoop);
@@ -354,7 +271,7 @@ async function iniciarHtml5Qrcode() {
     },
     {
       fps: 20,
-      qrbox: function(vw, vh) {
+      qrbox: function (vw, vh) {
         const w = Math.floor(vw * 0.9);
         const h = Math.max(Math.floor(vh * 0.2), 80);
         return { width: w, height: h };
@@ -362,7 +279,7 @@ async function iniciarHtml5Qrcode() {
       disableFlip: false
     },
     (text) => enviarCodigo(text),
-    () => {}
+    () => { }
   );
 
   statusEl.textContent = '📷 Câmera ativa — aponte para o código de barras';
@@ -388,7 +305,3 @@ async function iniciar() {
   statusEl.className = 'status warn';
   document.getElementById('reader').style.display = 'none';
 }
-</script>
-<div id="foto-temp" style="display:none"></div>
-</body>
-</html>

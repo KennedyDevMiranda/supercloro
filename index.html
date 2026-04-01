@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>📷 Scanner PDV</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header">
+    <h1>📷 Scanner de Código de Barras</h1>
+    <p>Aponte a câmera ou tire uma foto do código</p>
+  </div>
+
+  <!-- Configuração do servidor PDV -->
+  <div class="config">
+    <label>🖥️ Endereço do servidor PDV:</label>
+    <div class="config-box">
+      <input id="serverInput" type="text" placeholder="Ex: 192.168.1.10:5556" />
+      <button onclick="conectarServidor()">CONECTAR</button>
+    </div>
+    <div id="conexaoOk" class="conexao-ok">✅ Conectado ao PDV</div>
+    <div id="conexaoErr" class="conexao-err">❌ Não conectou — aceite o certificado primeiro</div>
+  </div>
+
+  <div id="avisoCert" class="aviso-cert">
+    <p>⚠️ Certificado do servidor não aceito.<br>Toque no link abaixo, aceite o certificado, e volte aqui:</p>
+    <a id="linkCert" href="#" target="_blank">Abrir servidor para aceitar certificado →</a>
+  </div>
+
+  <div id="reader"></div>
+
+  <div id="status" class="status">Configure o endereço do servidor acima</div>
+
+  <div class="acoes">
+    <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none">
+    <button class="btn-foto" onclick="document.getElementById('fotoInput').click()">📸 TIRAR FOTO DO CÓDIGO</button>
+  </div>
+
+  <div class="manual">
+    <input id="codigoManual" type="text" inputmode="numeric" placeholder="Ou digite o código" />
+    <button onclick="enviarManual()">ENVIAR</button>
+  </div>
+
+  <div class="historico">
+    <h3>Últimos escaneados:</h3>
+    <ul id="lista"></ul>
+  </div>
+
+  <div id="foto-temp" style="display:none"></div>
+
+  <script src="scanner.js"></script>
+</body>
+</html>

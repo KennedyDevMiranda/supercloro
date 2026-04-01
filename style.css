@@ -29,6 +29,10 @@ body { font-family: Arial, sans-serif; background: #0f172a; color: #f1f5f9; min-
 .acoes { width: 95%; max-width: 500px; margin: 8px auto; display: flex; gap: 8px; }
 .btn-foto { flex: 1; padding: 16px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; background: #3b82f6; color: white; cursor: pointer; text-align: center; }
 .btn-foto:active { background: #2563eb; }
+.acoes-principal { width: 95%; max-width: 500px; margin: 10px auto; }
+.btn-ler { width: 100%; padding: 22px; font-size: 22px; font-weight: bold; border: none; border-radius: 12px; background: #22c55e; color: #0f172a; cursor: pointer; text-align: center; letter-spacing: 2px; }
+.btn-ler:active { background: #16a34a; }
+.btn-ler:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
 .manual { width: 95%; max-width: 500px; margin: 8px auto; display: flex; gap: 8px; }
 .manual input { flex: 1; padding: 14px; font-size: 18px; border: 2px solid #334155; border-radius: 8px; background: #1e293b; color: #f1f5f9; text-align: center; }
 .manual input:focus { border-color: #22c55e; outline: none; }

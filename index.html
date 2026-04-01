@@ -8,8 +8,8 @@
 </head>
 <body>
   <div class="header">
-    <h1>Scanner de Codigo de Barras</h1>
-    <p>Aponte a camera para os numeros do codigo</p>
+    <h1>Scanner de Codigo</h1>
+    <p>Aponte a camera para os numeros e toque LER CODIGO</p>
   </div>
   <div class="config">
     <label>Endereco do servidor PDV:</label>
@@ -25,6 +25,9 @@
     <a id="linkCert" href="#" target="_blank">Abrir servidor para aceitar certificado</a>
   </div>
   <div id="reader"></div>
+  <div class="acoes-principal">
+    <button id="btnLer" class="btn-ler" disabled>LER CODIGO</button>
+  </div>
   <div class="ocr-info" id="ocrInfo">
     <div class="detectados" id="detectados"></div>
   </div>
